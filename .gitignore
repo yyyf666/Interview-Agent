@@ -1,0 +1,32 @@
+# 环境与数据
+.env
+data/
+*.log
+
+# Java
+java-backend/target/
+*.class
+.idea/
+*.iml
+.vscode/
+
+# Python
+python-ai/.venv/
+python-ai/venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 模型缓存
+.cache/
+huggingface/
+
+# 前端工程（构建产物 web/dist 需入库供 nginx 挂载）
+web/node_modules/
+
+# OS
+Thumbs.db
+.DS_Store
