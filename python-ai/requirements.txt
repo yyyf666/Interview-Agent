@@ -1,0 +1,18 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+pydantic-settings>=2.2
+langchain>=0.2
+langchain-openai>=0.1
+langgraph>=0.1
+psycopg[binary,pool]>=3.1
+pgvector>=0.2.4
+httpx>=0.27
+python-multipart>=0.0.9
+rank-bm25>=0.2.2
+jieba>=0.42
+redis>=5.0
+mcp>=1.2
+websockets>=12.0
+# 可选：本地重排模型。RERANK_ENABLED 默认 true，但未安装本依赖时精排自动降级为透传（不报错）；需真正启用请取消下行注释后重新 build（首次从 hf-mirror 下载模型，体积大）。
+# sentence-transformers>=2.7
