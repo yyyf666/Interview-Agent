@@ -1,0 +1,255 @@
+:root {
+  --bg: #0f1420;
+  --panel: #171e2e;
+  --panel2: #1f2839;
+  --text: #e6ebf5;
+  --muted: #8b96ad;
+  --primary: #4f7cff;
+  --ok: #34c77b;
+  --warn: #ffb020;
+  --err: #ff5d5d;
+  --radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex; align-items: center; gap: 24px;
+  padding: 14px 24px;
+  background: var(--panel);
+  border-bottom: 1px solid #263047;
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { font-weight: 700; font-size: 17px; }
+.tabs { display: flex; gap: 6px; flex: 1; }
+.tab {
+  background: transparent; color: var(--muted);
+  border: none; padding: 8px 16px; border-radius: 8px;
+  cursor: pointer; font-size: 14px;
+}
+.tab.active { background: var(--primary); color: #fff; }
+.conn { color: var(--err); }
+.conn.online { color: var(--ok); }
+
+main { max-width: 1100px; margin: 24px auto; padding: 0 20px; }
+.view { display: none; }
+.view.active { display: block; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--panel);
+  border: 1px solid #263047;
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 18px;
+}
+.card h3 { font-size: 15px; margin-bottom: 12px; color: #c7d2ea; }
+
+button {
+  background: var(--panel2); color: var(--text);
+  border: 1px solid #34405c; border-radius: 8px;
+  padding: 8px 14px; cursor: pointer; font-size: 13px;
+}
+button:hover { border-color: var(--primary); }
+button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+button.ghost { background: transparent; }
+button.big { width: 100%; padding: 14px; font-size: 15px; margin-top: 8px; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.right { float: right; }
+.hidden { display: none !important; }
+
+input, select, textarea {
+  background: var(--panel2); color: var(--text);
+  border: 1px solid #34405c; border-radius: 8px;
+  padding: 8px 10px; font-size: 13px; width: 100%;
+  margin: 4px 0; font-family: inherit;
+}
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+.row > * { flex: 1; }
+.row > button { flex: 0 0 auto; }
+.hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
+
+.mini-list { margin-top: 10px; max-height: 180px; overflow: auto; font-size: 13px; }
+.mini-list .item {
+  padding: 7px 10px; border-radius: 8px; margin-bottom: 5px;
+  background: var(--panel2); border: 1px solid transparent; cursor: pointer;
+}
+.mini-list .item.selected { border-color: var(--primary); }
+.mini-list .item small { color: var(--muted); margin-left: 8px; }
+.badge { font-size: 11px; padding: 1px 7px; border-radius: 10px; background: var(--panel2); color: var(--warn); }
+.badge.ok { color: var(--ok); }
+
+/* ---------- 面试对话 ---------- */
+.status-bar {
+  display: flex; gap: 22px; align-items: center;
+  background: var(--panel); border: 1px solid #263047;
+  border-radius: var(--radius); padding: 12px 18px; margin-bottom: 14px;
+  font-size: 13px; color: var(--muted);
+}
+.status-bar b { color: var(--text); }
+.rec { color: var(--err); animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+.chat {
+  height: calc(100vh - 320px); min-height: 360px;
+  overflow: auto; display: flex; flex-direction: column; gap: 12px;
+  padding: 8px 4px;
+}
+.msg { max-width: 78%; padding: 12px 15px; border-radius: 14px; font-size: 14px; line-height: 1.65; white-space: pre-wrap; }
+.msg.interviewer { background: var(--panel2); border: 1px solid #2c3a58; align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.candidate { background: #234234; align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg.system { align-self: center; background: transparent; color: var(--muted); font-size: 12px; }
+.msg .meta { display: block; margin-top: 6px; font-size: 11px; color: var(--muted); }
+.msg .score-line { color: var(--warn); }
+
+.composer { display: flex; gap: 10px; margin-top: 12px; align-items: flex-end; }
+.composer textarea { flex: 1; resize: vertical; }
+.composer-btns { display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- 报告 ---------- */
+#radar { display: block; margin: 16px auto; }
+.score-big { font-size: 42px; font-weight: 700; color: var(--primary); }
+.kv { font-size: 13px; color: var(--muted); margin: 3px 0; }
+.weak-item, .task-item {
+  background: var(--panel2); border-radius: 8px; padding: 10px 12px;
+  margin-bottom: 8px; font-size: 13px; line-height: 1.6;
+}
+.weak-item b { color: var(--warn); }
+.task-item .day { color: var(--ok); font-weight: 600; }
+ul.tight { padding-left: 18px; margin-top: 4px; }
+
+/* ---------- toast ---------- */
+.toast {
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
+  background: #000c; color: #fff; padding: 10px 22px; border-radius: 24px;
+  font-size: 13px; opacity: 0; pointer-events: none; transition: .25s;
+  z-index: 99;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: #a8322ecc; }
+.loading-dots::after { content: '…'; animation: blink 1.2s infinite; }
+
+/* ---------- 代码题编辑器 ---------- */
+.code-panel {
+  background: var(--panel);
+  border: 1px solid #263047;
+  border-top: none;
+  padding: 10px;
+}
+.code-toolbar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px; flex-wrap: wrap;
+}
+.badge {
+  background: var(--primary); color: #fff; font-size: 12px;
+  padding: 2px 8px; border-radius: 10px; font-weight: 600;
+}
+.badge {
+  background: var(--primary); color: #fff; font-size: 11px;
+  padding: 1px 8px; border-radius: 10px; font-weight: 600;
+}
+.badge.ok { background: rgba(52, 195, 143, .18); color: var(--ok); }
+.badge.warn { background: rgba(240, 165, 75, .18); color: var(--warn); }
+.badge.muted { background: var(--panel2); color: var(--muted); }
+
+/* 证据化评测：候选人原文摘录 */
+.quote {
+  display: block; color: var(--muted); font-size: 12px; margin: 2px 0 4px 14px;
+  padding-left: 8px; border-left: 2px solid var(--panel2);
+}
+
+/* JD匹配表 */
+.match-item {
+  padding: 8px 10px; border-radius: 8px; background: var(--panel2);
+  margin-bottom: 6px; font-size: 13px;
+}
+.match-item small { display: block; color: var(--muted); margin-top: 3px; }
+
+/* 历史会话列表/回放 */
+.mini-list.tall { max-height: 340px; }
+.chat.readonly { max-height: 380px; }
+
+.code-toolbar select, .code-toolbar input {
+  background: var(--panel2); color: var(--text);
+  border: 1px solid #34405c; border-radius: 6px; padding: 5px 8px; font-size: 13px;
+}
+.code-toolbar input { flex: 1; min-width: 120px; }
+.mini { font-size: 12px; color: var(--muted); }
+#code-editor { border-radius: 8px; overflow: hidden; border: 1px solid #34405c; }
+#code-editor .CodeMirror { height: 280px; font-size: 13px; }
+.CodeMirror { background: #0b1120 !important; color: #d7e0f0; }
+.CodeMirror-gutters { background: #0b1120 !important; border-right: 1px solid #263047 !important; }
+#code-editor-fallback {
+  width: 100%; height: 280px; resize: vertical;
+  background: #0b1120; color: #d7e0f0; border: 1px solid #34405c;
+  border-radius: 8px; padding: 10px; font-family: Consolas, Menlo, monospace;
+  font-size: 13px; line-height: 1.5; tab-size: 4;
+}
+.code-output {
+  margin-top: 8px; max-height: 220px; overflow: auto;
+  background: #0b1120; border: 1px solid #34405c; border-radius: 8px;
+  padding: 10px 12px; font-size: 12.5px; line-height: 1.5;
+  white-space: pre-wrap; word-break: break-all; color: #9fd1a0;
+}
+.code-output.run-fail { color: var(--warn); }
+.sent-code {
+  font-family: Consolas, Menlo, monospace; font-size: 12px;
+  background: #0b112066; padding: 6px 8px; border-radius: 6px;
+  white-space: pre-wrap; word-break: break-all; margin-bottom: 4px;
+  max-height: 200px; overflow: auto;
+}
+
+/* ---------- 登录/注册门禁 ---------- */
+.auth-gate {
+  position: fixed; inset: 0; z-index: 100;
+  background: radial-gradient(circle at 30% 20%, #16203a 0%, #0b1120 70%);
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-gate.hidden { display: none; }
+.auth-card {
+  width: 360px; background: var(--card, #141d33); border: 1px solid #2c3a58;
+  border-radius: 14px; padding: 28px 26px; box-shadow: 0 18px 50px #0009;
+}
+.auth-card h2 { margin: 0 0 18px; font-size: 19px; text-align: center; }
+.auth-card input { width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+.auth-card .primary { width: 100%; margin-top: 6px; }
+.auth-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.auth-tabs button {
+  flex: 1; padding: 7px 0; background: transparent; border: 1px solid #34405c;
+  color: var(--muted, #8b96ad); border-radius: 8px; cursor: pointer;
+}
+.auth-tabs button.active { border-color: #4f7cff; color: #d7e0f0; background: #1b2745; }
+.auth-user { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted, #8b96ad); }
+
+/* ---------- Panel 多面试官徽章 ---------- */
+.persona-badge {
+  display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px;
+  margin-right: 6px; vertical-align: 1px; border: 1px solid transparent;
+}
+.persona-standard { background: #24365e; color: #9db8ff; }
+.persona-friendly  { background: #1d4230; color: #8fe0ab; }
+.persona-pressure  { background: #4d2230; color: #ff9d9d; }
+.persona-socratic  { background: #403257; color: #cbb0ff; }
+.persona-english   { background: #134347; color: #8fe3e8; }
+.persona-unknown   { background: #2b3346; color: #aab6cf; }
+.persona-checks { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 6px 0 10px; }
+.persona-checks label { display: flex; align-items: center; gap: 4px; font-size: 13px; color: #c7d2ea; }
+
+/* ---------- 实时语音 ---------- */
+.realtime-bar { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+#rt-live-text {
+  min-height: 26px; font-size: 13.5px; color: #9fd1a0; font-style: italic;
+  padding: 6px 10px; background: #0b1120; border: 1px dashed #34405c;
+  border-radius: 8px; margin-top: 6px; white-space: pre-wrap;
+}
+.rt-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #ff5d5d; animation: rtblink 1s infinite; }
+@keyframes rtblink { 50% { opacity: 0.25; } }

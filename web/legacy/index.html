@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智能自适应AI面试系统</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <script src="https://cdn.bootcdn.net/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+</head>
+<body>
+  <!-- ============ 登录/注册门禁 ============ -->
+  <div id="auth-gate" class="auth-gate hidden">
+    <div class="auth-card">
+      <h2>🎯 智能自适应 AI 面试系统</h2>
+      <div class="auth-tabs">
+        <button id="tab-login" class="active">登录</button>
+        <button id="tab-register">注册</button>
+      </div>
+      <input id="auth-username" placeholder="用户名" autocomplete="username" />
+      <input id="auth-password" type="password" placeholder="密码（至少6位）" autocomplete="current-password" />
+      <input id="auth-nickname" placeholder="昵称（注册选填）" class="hidden" />
+      <button id="auth-submit" class="primary">登录</button>
+      <p class="hint">注册后自动拥有专属候选人画像；本地演示也可用预置账号 demo / demo1234。</p>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">🎯 智能自适应 AI 面试系统</div>
+    <nav class="tabs">
+      <button data-view="setup" class="tab active">准备</button>
+      <button data-view="interview" class="tab">面试</button>
+      <button data-view="report" class="tab">复盘报告</button>
+      <button data-view="history" class="tab">历史与成长</button>
+      <button data-view="manage" class="tab">知识库/题库</button>
+    </nav>
+    <span id="conn-dot" class="conn" title="服务状态">●</span>
+    <span class="auth-user"><span id="whoami"></span><button id="logout" class="ghost hidden">退出</button></span>
+  </header>
+
+  <main>
+    <!-- ============ 准备页 ============ -->
+    <section id="view-setup" class="view active">
+      <div class="grid2">
+        <div class="card">
+          <h3>1. 候选人画像</h3>
+          <select id="profile-select"></select>
+          <button id="refresh-profiles" class="ghost">刷新</button>
+          <div class="row">
+            <input id="new-nickname" placeholder="新候选人昵称" />
+            <input id="new-role" placeholder="目标岗位" />
+            <button id="create-profile">创建</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>2. 简历（PDF / Word / TXT / MD）</h3>
+          <input type="file" id="resume-file" accept=".pdf,.docx,.txt,.md,.markdown" />
+          <button id="upload-resume">上传并解析</button>
+          <div id="resume-list" class="mini-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>3. 目标岗位 JD</h3>
+          <textarea id="jd-text" rows="5" placeholder="粘贴 JD 文本，或上传 JD 文件"></textarea>
+          <div class="row">
+            <button id="parse-jd-text">解析文本</button>
+            <input type="file" id="jd-file" accept=".pdf,.docx,.txt,.md" />
+            <button id="upload-jd">上传解析</button>
+          </div>
+          <div id="jd-list" class="mini-list"></div>
+        </div>
+
+        <div class="card">
+          <h3>4. 开始面试</h3>
+          <label>面试官风格（可多选组成考官团 Panel，按轮次轮流发言）</label>
+          <div id="persona-checks" class="persona-checks">
+            <label><input type="checkbox" value="standard" checked />标准专业</label>
+            <label><input type="checkbox" value="friendly" />亲和鼓励</label>
+            <label><input type="checkbox" value="pressure" />压力追问</label>
+            <label><input type="checkbox" value="socratic" />苏格拉底式</label>
+            <label><input type="checkbox" value="english" />双语面试</label>
+          </div>
+          <label>输入方式</label>
+          <select id="interview-mode">
+            <option value="TEXT">文字回答</option>
+            <option value="AUDIO">语音回答（非实时）</option>
+            <option value="REALTIME">语音回答（实时流式，边说边转写）</option>
+          </select>
+          <button id="start-interview" class="primary big">开始自适应面试 →</button>
+          <p class="hint">系统将根据简历-JD缺口分析自动规划主题、题量与难度；技术岗会包含手写代码题。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 面试页 ============ -->
+    <section id="view-interview" class="view">
+      <div class="status-bar">
+        <span>主题：<b id="s-topic">-</b></span>
+        <span>难度：<b id="s-diff">-</b></span>
+        <span>轮次：<b id="s-turn">-</b></span>
+        <span id="s-rec" class="rec hidden">● 录音中</span>
+        <button id="finish-interview" class="ghost right">结束并生成报告</button>
+      </div>
+      <div id="chat" class="chat"></div>
+      <!-- 代码题作答面板（question_type=code 时启用） -->
+      <div id="code-panel" class="code-panel hidden">
+        <div class="code-toolbar">
+          <span id="code-lang" class="badge">java</span>
+          <select id="tc-select" title="选择样例测试用例作为运行输入"></select>
+          <input id="code-stdin" placeholder="stdin 自定义输入（可选）" />
+          <button id="run-code">▶ 运行代码</button>
+          <span id="run-status" class="mini"></span>
+        </div>
+        <div id="code-editor"></div>
+        <textarea id="code-editor-fallback" class="hidden" spellcheck="false" autocomplete="off"
+          placeholder="在此编写代码…（CodeMirror 加载失败时的纯文本模式）"></textarea>
+        <pre id="code-output" class="code-output hidden"></pre>
+      </div>
+      <div class="composer" id="text-composer">
+        <textarea id="answer-input" rows="3" placeholder="输入你的回答…" disabled></textarea>
+        <div class="composer-btns">
+          <button id="send-answer" class="primary" disabled>提交回答</button>
+          <button id="hint-btn" class="ghost" title="卡住时向面试官请求分级提示（方向→关键点→揭晓思路），使用提示会计入评测降档">💡 请求提示</button>
+          <button id="mic-btn" title="语音回答">🎤</button>
+          <button id="stop-mic" class="hidden">⏹ 发送语音</button>
+          <button id="rt-btn" class="hidden" title="开始/停止实时语音（说完自动提交）">🎙 实时对话</button>
+        </div>
+      </div>
+      <div id="rt-live" class="hidden">
+        <div id="rt-live-text"></div>
+        <div class="realtime-bar"><span id="rt-status" class="mini"></span></div>
+      </div>
+    </section>
+
+    <!-- ============ 报告页 ============ -->
+    <section id="view-report" class="view">
+      <div class="card">
+        <h3>面试总览</h3>
+        <div id="report-summary">尚无报告，请先完成一场面试。</div>
+        <canvas id="radar" width="360" height="360"></canvas>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h3>短板诊断</h3>
+          <div id="report-weakness"></div>
+        </div>
+        <div class="card">
+          <h3>训练计划</h3>
+          <div id="report-training"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🎯 岗位JD逐项匹配</h3>
+        <div id="report-match"></div>
+      </div>
+    </section>
+
+    <!-- ============ 历史与成长页 ============ -->
+    <section id="view-history" class="view">
+      <div class="grid2">
+        <div class="card">
+          <h3>历史面试（跨场成长档案）</h3>
+          <button id="hist-refresh" class="ghost">刷新</button>
+          <div id="hist-sessions" class="mini-list tall"></div>
+        </div>
+        <div class="card">
+          <h3>总分趋势</h3>
+          <canvas id="trend" width="520" height="240"></canvas>
+          <div id="hist-profile" class="kv"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>会话回放 <small id="replay-title" style="color:var(--muted)"></small></h3>
+        <div id="replay" class="chat readonly"></div>
+      </div>
+    </section>
+
+    <!-- ============ 管理页 ============ -->
+    <section id="view-manage" class="view">
+      <div class="grid2">
+        <div class="card">
+          <h3>知识库</h3>
+          <input type="file" id="kb-file" accept=".md,.txt,.pdf,.docx" />
+          <input id="kb-tags" placeholder="标签，逗号分隔" />
+          <button id="kb-upload">上传入库</button>
+          <div id="kb-list" class="mini-list"></div>
+        </div>
+        <div class="card">
+          <h3>题库</h3>
+          <button id="qb-reindex" class="ghost">重建向量索引</button>
+          <button id="qb-refresh">刷新</button>
+          <div id="qb-list" class="mini-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
