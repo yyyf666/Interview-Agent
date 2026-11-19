@@ -1,0 +1,1 @@
+const a={accent:"#2563eb",ink2:"#64748b",axis:"rgba(15,23,42,.14)",split:"rgba(15,23,42,.08)",areaTop:"rgba(37,99,235,.22)",areaBottom:"rgba(37,99,235,.02)",gaugeTrack:"rgba(15,23,42,.08)",gaugeHi:"#059669",gaugeMid:"#2563eb",gaugeLo:"#c2410c"};export{a as C};
